@@ -68,11 +68,5 @@ class UsersController extends Controller
 				'message' => $th
 			], 400);
 		}
-
-		return response()->json([
-			'success' => true,
-			'message' =>'Registration success',
-			'data'    => $separated_name[1] ?? null
-		], 200);
     }
 }
