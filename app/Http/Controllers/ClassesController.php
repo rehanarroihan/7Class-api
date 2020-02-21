@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Post;
 use App\Models\Classes;
+use App\Models\ClassMembers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,11 +32,20 @@ class ClassesController extends Controller
 
         try {
 			if ($class->save()) {
-				return response()->json([
-					'success' => true,
-					'data' => null,
-					'message' => 'Class created'
-				], 200);
+				$joinClass = $this->joinClass($request->user->id, $class->id);
+				if ($joinClass) {
+					return response()->json([
+						'success' => true,
+						'data' => null,
+						'message' => 'Class created'
+					], 200);
+				} else {
+					return response()->json([
+						'success' => false,
+						'data' => null,
+						'message' => 'Create class failed'
+					], 200);
+				}
 			} else {
 				return response()->json([
 					'success' => false,
@@ -59,6 +69,19 @@ class ClassesController extends Controller
 			'data' => $result,
 			'message' => 'Data fetched'
 		], 200);
+	}
+
+	private function joinClass($id_user, $id_class)
+	{
+		$class = new ClassMembers();
+        $class->id_user = $id_user;
+		$class->id_class = $id_class;
+		
+		if ($class->save()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private function generateRandomCode()

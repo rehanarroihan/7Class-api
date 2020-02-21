@@ -50,4 +50,9 @@ class Users extends Model
     {
         return $this->hasMany('App\Models\Classes', 'created_by');
     }
+
+    public function classMember()
+    {
+        return $this->hasMany('App\Models\ClassMembers', 'id_user');
+    }
 }
