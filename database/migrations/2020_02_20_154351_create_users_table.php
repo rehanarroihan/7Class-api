@@ -23,8 +23,8 @@ class CreateUsersTable extends Migration
             $table->string('phone')->nullable();
             $table->string('contact_type')->nullable();
             $table->string('password')->nullable();
-            $table->string('need_reset_password');
-            $table->smallInteger('is_verified');
+            $table->boolean('is_email_verified')->default(false);
+            $table->boolean('is_phone_verified')->default(false);
             $table->string('picture_url')->nullable();
             $table->timestamps();
         });

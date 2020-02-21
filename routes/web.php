@@ -14,3 +14,7 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->group(['prefix' => 'v1/user'], function () use ($router) {
+    $router->post('register', ['uses' => 'UsersController@emailRegistration']);
+});
