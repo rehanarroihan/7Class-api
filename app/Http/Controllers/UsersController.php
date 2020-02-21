@@ -35,7 +35,7 @@ class UsersController extends Controller
 				'success' => false,
 				'message' => 'Invalid request parameter',
 				'data' => $validator->errors()
-			], 401);
+			], 400);
 		}
 		
 		$full_name = $request->full_name;
@@ -94,7 +94,7 @@ class UsersController extends Controller
 				'success' => false,
 				'message' => 'Invalid request parameter',
 				'data' => $validator->errors()
-			], 401);
+			], 400);
 		}
 
 		$userRegistered = Users::where([

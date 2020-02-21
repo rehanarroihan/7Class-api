@@ -51,7 +51,7 @@ class JwtMiddleware
             ], 400);
         }
 
-        $users = Users::where('email', $credentials->sub->id_google)->where('id', $credentials->sub->id)->first();
+        $users = Users::where('email', $credentials->sub->email)->first();
 
         if (!$users) {
             return response()->json([
@@ -61,6 +61,7 @@ class JwtMiddleware
             ], 400);
         }
 
+        $request->user = $credentials->sub;
         return $next($request);
     }
 }

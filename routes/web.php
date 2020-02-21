@@ -19,3 +19,9 @@ $router->group(['prefix' => 'v1/user'], function () use ($router) {
     $router->post('register', ['uses' => 'UsersController@emailRegistration']);
     $router->post('auth', ['uses' => 'UsersController@emailLogin']);
 });
+
+$router->group(['prefix' => 'v1/class'], function () use ($router) {
+    $router->group(['middleware' => 'jwt.auth'], function () use ($router) {
+        $router->post('', ['uses' => 'ClassesController@store']);
+    });
+});
