@@ -23,8 +23,7 @@ class Classes extends Model
       'name',
       'description',
       'class_picture',
-      'class_banner',
-      'created_by'
+      'class_banner'
     ];
 
     /**
@@ -33,4 +32,9 @@ class Classes extends Model
      * @var bool
      */
     public $timestamps = true;
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\Users', 'created_by');
+    }
 }

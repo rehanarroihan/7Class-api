@@ -45,4 +45,9 @@ class Users extends Model
      * @var bool
      */
     public $timestamps = true;
+
+    public function classes()
+    {
+        return $this->hasMany('App\Models\Classes', 'created_by');
+    }
 }

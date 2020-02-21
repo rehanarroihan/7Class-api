@@ -25,6 +25,7 @@ class ClassesController extends Controller
 
         $class = new Classes();
         $class->name = $request->name;
+        $class->code = $this->generateRandomCode();
         $class->description = $request->description ?? null;
         $class->created_by = $request->user->id;
 
@@ -32,9 +33,7 @@ class ClassesController extends Controller
 			if ($class->save()) {
 				return response()->json([
 					'success' => true,
-					'data' => [
-						'detail' => $class
-					],
+					'data' => null,
 					'message' => 'Class created'
 				], 200);
 			} else {
@@ -51,5 +50,25 @@ class ClassesController extends Controller
 				'message' => $th
 			], 400);
 		}
-    }
+	}
+	
+	public function myclasses(Request $request) {
+		$result = Classes::where('created_by', $request->user->id)->get();
+		return response()->json([
+			'success' => true,
+			'data' => $result,
+			'message' => 'Data fetched'
+		], 200);
+	}
+
+	private function generateRandomCode()
+	{
+		$characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$charactersLength = strlen($characters);
+		$randomString = '';
+		for ($i = 0; $i < 5; $i++) {
+			$randomString .= $characters[rand(0, $charactersLength - 1)];
+		}
+		return $randomString;
+	}
 }

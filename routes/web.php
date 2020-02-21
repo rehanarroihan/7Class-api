@@ -23,5 +23,6 @@ $router->group(['prefix' => 'v1/user'], function () use ($router) {
 $router->group(['prefix' => 'v1/class'], function () use ($router) {
     $router->group(['middleware' => 'jwt.auth'], function () use ($router) {
         $router->post('', ['uses' => 'ClassesController@store']);
+        $router->get('', ['uses' => 'ClassesController@myclasses']);
     });
 });

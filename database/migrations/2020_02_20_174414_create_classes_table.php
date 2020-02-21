@@ -16,6 +16,7 @@ class CreateClassesTable extends Migration
         Schema::create('classes', function (Blueprint $table) {
             $table->integer('id')->autoIncrement();
             $table->string('name');
+            $table->string('code');
             $table->string('description')->nullable();
             $table->string('class_picture')->nullable();
             $table->string('class_banner')->nullable();
