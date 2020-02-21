@@ -35,6 +35,10 @@ class Users extends Model
       'created_at'
     ];
 
+    protected $hidden = [
+      'password'
+    ];
+
     /**
      * Indicates if the model should be timestamped.
      *
