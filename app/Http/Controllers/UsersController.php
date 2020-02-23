@@ -80,7 +80,7 @@ class UsersController extends Controller
 	private function jwt(Users $user)
     {
         $payload = [
-            'iss'   => 'classbucket_app',
+            'iss'   => '7class_app',
             'sub'   => $user,
             'iat'   => time(),
             'exp'   => time() + (24 * 60 * 60 * 7)
