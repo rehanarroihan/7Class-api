@@ -17,11 +17,7 @@ class ClassesController extends Controller
         ]);
         
         if ($validator->fails()) {
-			return response()->json([
-				'success' => false,
-				'message' => 'Invalid request parameter',
-				'data' => $validator->errors()
-			], 400);
+			return $this->ValidatorFailedResponse();
         }
 
         $class = new Classes();
@@ -34,41 +30,21 @@ class ClassesController extends Controller
 			if ($class->save()) {
 				$joinClass = $this->joinClass($request->user->id, $class->id);
 				if ($joinClass) {
-					return response()->json([
-						'success' => true,
-						'data' => null,
-						'message' => 'Class created'
-					], 200);
+					return $this->CommonResponse(true, "Create class");
 				} else {
-					return response()->json([
-						'success' => false,
-						'data' => null,
-						'message' => 'Create class failed'
-					], 200);
+					return $this->CommonResponse(false, "Create class");
 				}
 			} else {
-				return response()->json([
-					'success' => false,
-					'data' => null,
-					'message' => 'Create class failed'
-				], 200);
+				return $this->CommonResponse(false, "Create class");
 			}
 		} catch (\Throwable $th) {
-			return response()->json([
-				'success' => false,
-				'data' => null,
-				'message' => $th
-			], 400);
+			return $this->ExceptionResponse($th);
 		}
 	}
 	
 	public function myclasses(Request $request) {
 		$result = Classes::where('created_by', $request->user->id)->get();
-		return response()->json([
-			'success' => true,
-			'data' => $result,
-			'message' => 'Data fetched'
-		], 200);
+		return $this->MessageResponse(true, 'Data fetched', $result);
 	}
 
 	private function joinClass($id_user, $id_class)

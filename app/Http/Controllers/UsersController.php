@@ -18,7 +18,6 @@ class UsersController extends Controller
             'iat'   => time(),
             'exp'   => time() + (24 * 60 * 60 * 7)
         ];
-
         return JWT::encode($payload, env('JWT_KEY'));
     }
 
@@ -31,11 +30,7 @@ class UsersController extends Controller
 		]);
 
 		if ($validator->fails()) {
-			return response()->json([
-				'success' => false,
-				'message' => 'Invalid request parameter',
-				'data' => $validator->errors()
-			], 400);
+			return $this->ValidatorFailedResponse();
 		}
 		
 		$full_name = $request->full_name;
@@ -50,35 +45,19 @@ class UsersController extends Controller
 
 		$userRegistered = Users::where(['email' => $request->email])->first();
 		if ($userRegistered) {
-			return response()->json([
-				'success' => false,
-				'data' => null,
-				'message' => 'Email already registered'
-			], 200);
+			return $this->MessageResponse(false, 'Email already registered');
 		}
 		
 		try {
 			if ($user->save()) {
-				return response()->json([
-					'success' => true,
-					'data' => [
-						'detail' => $user
-					],
-					'message' => 'Registration successful'
-				], 200);
+				return $this->CommonResponse(true, "Registration", [
+					'detail' => $user
+				]);
 			} else {
-				return response()->json([
-					'success' => false,
-					'data' => null,
-					'message' => 'Registration failed'
-				], 200);
+				return $this->CommonResponse(false, "Registration");
 			}
 		} catch (\Throwable $th) {
-			return response()->json([
-				'success' => false,
-				'data' => null,
-				'message' => $th
-			], 400);
+			return $this->ExceptionResponse($th);
 		}
 	}
 	
@@ -90,11 +69,7 @@ class UsersController extends Controller
 		]);
 		
 		if ($validator->fails()) {
-			return response()->json([
-				'success' => false,
-				'message' => 'Invalid request parameter',
-				'data' => $validator->errors()
-			], 400);
+			return $this->ValidatorFailedResponse();
 		}
 
 		$userRegistered = Users::where([
@@ -102,20 +77,12 @@ class UsersController extends Controller
 			'password' => $request->password
 		])->first();
 		if (!$userRegistered) {
-			return response()->json([
-				'success' => true,
-				'data' => null,
-				'message' => 'Invalid username or password'
-			], 401);
+			return $this->MessageResponse(false, "Invalid username or password");
 		} else {
-			return response()->json([
-				'success' => true,
-				'data' => [
-					'detail' => $userRegistered,
-					'token' => $this->jwt($userRegistered)
-				],
-				'message' => 'Login success'
-			], 200);
+			return $this->CommonResponse(true, "Login", [
+				'detail' => $userRegistered,
+				'token' => $this->jwt($userRegistered)
+			]);
 		}
 	}
 }
