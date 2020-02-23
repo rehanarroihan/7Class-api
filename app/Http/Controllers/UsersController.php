@@ -33,19 +33,20 @@ class UsersController extends Controller
 		$user->email = $request->email;
 		$user->password = $request->password;
 
+		// TODO : checking email register status
 		$userRegistered = Users::where(['email' => $request->email])->first();
 		if ($userRegistered) {
 			return $this->MessageResponse(false, 'Email already registered');
 		}
 		
 		try {
-			if ($user->save()) {
-				return $this->CommonResponse(true, "Registration", [
-					'detail' => $user
-				]);
-			} else {
+			if (!$user->save()) {
 				return $this->CommonResponse(false, "Registration");
 			}
+
+			return $this->CommonResponse(true, "Registration", [
+				'detail' => $user
+			]);
 		} catch (\Throwable $th) {
 			return $this->ExceptionResponse($th);
 		}
@@ -68,12 +69,12 @@ class UsersController extends Controller
 		])->first();
 		if (!$userRegistered) {
 			return $this->MessageResponse(false, "Invalid username or password");
-		} else {
-			return $this->CommonResponse(true, "Login", [
-				'detail' => $userRegistered,
-				'token' => $this->jwt($userRegistered)
-			]);
 		}
+		
+		return $this->CommonResponse(true, "Login", [
+			'detail' => $userRegistered,
+			'token' => $this->jwt($userRegistered)
+		]);
 	}
 
 	private function jwt(Users $user)

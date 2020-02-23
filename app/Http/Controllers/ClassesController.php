@@ -22,7 +22,7 @@ class ClassesController extends Controller
 
         $class = new Classes();
         $class->name = $request->name;
-        $class->code = $this->generateRandomCode();
+        $class->code = $this->generateClassCode();
         $class->description = $request->description ?? null;
         $class->created_by = $request->user->id;
 
@@ -31,12 +31,13 @@ class ClassesController extends Controller
 				return $this->CommonResponse(false, "Create class");	
 			}
 
+			// TODO : joining to created class
 			$joinClass = $this->joinClass($request->user->id, $class->id);
 			if (!$joinClass) {
 				return $this->CommonResponse(false, "Create class");	
 			}
 
-			return $this->CommonResponse(true, "Create class");
+			return $this->MessageResponse(true, "Create class success", $class);
 		} catch (\Throwable $th) {
 			return $this->ExceptionResponse($th);
 		}
@@ -100,6 +101,20 @@ class ClassesController extends Controller
 		} else {
 			return false;
 		}
+	}
+
+	private function generateClassCode()
+	{
+		// TODO : generate unique class code
+		$uniqueClassCodeWannaBe = $this->generateRandomCode();
+		$codeAvailable = Classes::where([
+			'code' => $uniqueClassCodeWannaBe
+		])->first();
+		do {
+			$unieqClassCode = $this->generateRandomCode();
+		} while($codeAvailable);
+
+		return $uniqueClassCodeWannaBe;
 	}
 
 	private function generateRandomCode()
