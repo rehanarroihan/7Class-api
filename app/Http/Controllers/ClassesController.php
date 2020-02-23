@@ -27,24 +27,66 @@ class ClassesController extends Controller
         $class->created_by = $request->user->id;
 
         try {
-			if ($class->save()) {
-				$joinClass = $this->joinClass($request->user->id, $class->id);
-				if ($joinClass) {
-					return $this->CommonResponse(true, "Create class");
-				} else {
-					return $this->CommonResponse(false, "Create class");
-				}
-			} else {
-				return $this->CommonResponse(false, "Create class");
+			if (!$class->save()) {
+				return $this->CommonResponse(false, "Create class");	
 			}
+
+			$joinClass = $this->joinClass($request->user->id, $class->id);
+			if (!$joinClass) {
+				return $this->CommonResponse(false, "Create class");	
+			}
+
+			return $this->CommonResponse(true, "Create class");
 		} catch (\Throwable $th) {
 			return $this->ExceptionResponse($th);
 		}
 	}
 	
 	public function myclasses(Request $request) {
-		$result = Classes::where('created_by', $request->user->id)->get();
-		return $this->MessageResponse(true, 'Data fetched', $result);
+		$result = Classes::whereHas('members', function($query) use($request) {
+			$query->where('id_user', $request->user->id);
+		})->get();
+		return $this->MessageResponse(true, 'Joined class list fetched', $result);
+	}
+
+	public function classdetail(Request $request, $id_class) {
+		$result = Classes::with('member')->find($id_class);
+		return $this->MessageResponse(true, 'Class detail fetched', $result);
+	}
+
+	public function enroll(Request $request) {
+		$validator = Validator::make($request->all(), [
+			'class_code' => 'required'
+        ]);
+        
+        if ($validator->fails()) {
+			return $this->ValidatorFailedResponse();
+		}
+
+		// TODO : check is class exist
+		$classExist = Classes::where([
+			'code' => $request->class_code
+		])->first();
+		if (!$classExist) {
+			return $this->MessageResponse(false, "Class not found");
+		}
+
+		// TODO : checking is user enrolled
+		$isJoined = ClassMembers::where([
+			'id_user' => $request->user->id,
+			'id_class' => $classExist->id
+		])->first();
+		if ($isJoined) {
+			return $this->MessageResponse(false, "Already joined");
+		}
+
+		// TODO : joining class
+		$joinClass = $this->joinClass($request->user->id, $classExist->id);
+		if ($joinClass) {
+			return $this->CommonResponse(true, "Join class");
+		} else {
+			return $this->CommonResponse(false, "Join class");
+		}
 	}
 
 	private function joinClass($id_user, $id_class)

@@ -17,8 +17,8 @@ class Controller extends BaseController
     protected function ExceptionResponse($err) {
         return response()->json([
             'success' => false,
-            'message' => "Exception: ".$err,
-            'data' => null
+            'message' => "Exception error",
+            'data' => $err
         ], 500);
     }
 

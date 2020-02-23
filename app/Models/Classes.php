@@ -33,8 +33,13 @@ class Classes extends Model
      */
     public $timestamps = true;
 
-    public function user()
+    public function member()
     {
-        return $this->belongsTo('App\Models\Users', 'created_by');
+        return $this->belongsToMany(Users::class)->using(ClassMembers::class);;
+    }
+
+    public function members()
+    {
+        return $this->hasMany(ClassMembers::class, 'id_class');
     }
 }

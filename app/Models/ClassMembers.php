@@ -29,6 +29,13 @@ class ClassMembers extends Model
 
     public function classes()
     {
-        return $this->belongsTo('App\Models\Users', 'created_by');
+        // return $this->hasMany('App\Models\Classes', 'id_class');
+        return $this->belongsTo(Classes::class, 'id_class');
+    }
+
+    public function users()
+    {
+        // return $this->hasMany('App\Models\Classes', 'id_class');
+        return $this->belongsTo(Users::class, 'id_user');
     }
 }

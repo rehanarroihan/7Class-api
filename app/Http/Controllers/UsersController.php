@@ -10,16 +10,6 @@ use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
-	private function jwt(Users $user)
-    {
-        $payload = [
-            'iss'   => 'classbucket_app',
-            'sub'   => $user,
-            'iat'   => time(),
-            'exp'   => time() + (24 * 60 * 60 * 7)
-        ];
-        return JWT::encode($payload, env('JWT_KEY'));
-    }
 
     public function emailRegistration(Request $request)
     {
@@ -85,4 +75,15 @@ class UsersController extends Controller
 			]);
 		}
 	}
+
+	private function jwt(Users $user)
+    {
+        $payload = [
+            'iss'   => 'classbucket_app',
+            'sub'   => $user,
+            'iat'   => time(),
+            'exp'   => time() + (24 * 60 * 60 * 7)
+        ];
+        return JWT::encode($payload, env('JWT_KEY'));
+    }
 }
