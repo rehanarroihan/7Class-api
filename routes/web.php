@@ -26,5 +26,6 @@ $router->group(['prefix' => 'v1/class'], function () use ($router) {
         $router->get('', ['uses' => 'ClassesController@myclasses']);
         $router->get('/{id_class}', ['uses' => 'ClassesController@classdetail']);
         $router->post('/enroll', ['uses' => 'ClassesController@enroll']);
+        $router->post('/exit', ['uses' => 'ClassesController@exit']);
     });
 });

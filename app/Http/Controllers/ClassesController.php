@@ -90,6 +90,27 @@ class ClassesController extends Controller
 		}
 	}
 
+	public function exit(Request $request) {
+		$validator = Validator::make($request->all(), [
+			'id_class' => 'required'
+        ]);
+        
+        if ($validator->fails()) {
+			return $this->ValidatorFailedResponse();
+		}
+
+		// TODO : removing user from class
+		$delete = ClassMembers::where([
+			'id_user' => $request->user->id,
+			'id_class' => $request->id_class
+		])->delete();
+		if (!$delete) {
+			return $this->CommonResponse(false, "Exit class");
+		}
+
+		return $this->CommonResponse(true, "Exit class");
+	}
+
 	private function joinClass($id_user, $id_class)
 	{
 		$class = new ClassMembers();
