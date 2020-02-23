@@ -33,11 +33,6 @@ class Classes extends Model
      */
     public $timestamps = true;
 
-    public function member()
-    {
-        return $this->belongsToMany(Users::class)->using(ClassMembers::class);;
-    }
-
     public function members()
     {
         return $this->hasMany(ClassMembers::class, 'id_class');

@@ -51,8 +51,15 @@ class ClassesController extends Controller
 	}
 
 	public function classdetail(Request $request, $id_class) {
-		$result = Classes::with('member')->find($id_class);
+		$result = Classes::where([
+			'id' => $id_class
+		])->first();
 		return $this->MessageResponse(true, 'Class detail fetched', $result);
+	}
+
+	public function classmember(Request $request, $id_class) {
+		// $result = ClassMembers::where('id_class', $id_class)->with('member')->get();
+		return $this->MessageResponse(true, 'Class detail fetched', null);
 	}
 
 	public function enroll(Request $request) {
