@@ -34,8 +34,7 @@ class UsersController extends Controller
 		$user->password = $request->password;
 
 		// TODO : checking email register status
-		$userRegistered = Users::where(['email' => $request->email])->first();
-		if ($userRegistered) {
+		if ($isEmailRegistered($request->email)) {
 			return $this->MessageResponse(false, 'Email already registered');
 		}
 		
@@ -50,6 +49,31 @@ class UsersController extends Controller
 		} catch (\Throwable $th) {
 			return $this->ExceptionResponse($th);
 		}
+	}
+
+	public function checkemail(Request $request) {
+		$validator = Validator::make($request->all(), [
+			'email' => 'required'
+        ]);
+        
+        if ($validator->fails()) {
+			return $this->ValidatorFailedResponse();
+		}
+		
+		// TODO : checking email register status
+		if ($this->isEmailRegistered($request->email)) {
+			// INFO : send message that email registered
+			return $this->MessageResponse(false, "true");
+		}
+		return $this->MessageResponse(false, "false");
+	}
+
+	private function isEmailRegistered($email) {
+		$userRegistered = Users::where(['email' => $email])->first();
+		if ($userRegistered) {
+			return true;
+		}
+		return false;
 	}
 	
 	public function emailLogin(Request $request)

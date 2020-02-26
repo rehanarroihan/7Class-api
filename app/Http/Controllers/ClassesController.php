@@ -90,11 +90,11 @@ class ClassesController extends Controller
 
 		// TODO : joining class
 		$joinClass = $this->joinClass($request->user->id, $classExist->id);
-		if ($joinClass) {
-			return $this->CommonResponse(true, "Join class");
-		} else {
-			return $this->CommonResponse(false, "Join class");
+		if (!$joinClass) {
+			return $this->CommonResponse(false, "Join class");	
 		}
+
+		return $this->CommonResponse(true, "Join class");
 	}
 
 	public function exit(Request $request) {
