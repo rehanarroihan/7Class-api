@@ -34,7 +34,7 @@ class UsersController extends Controller
 		$user->password = $request->password;
 
 		// TODO : checking email register status
-		if ($isEmailRegistered($request->email)) {
+		if ($this->isEmailRegistered($request->email)) {
 			return $this->MessageResponse(false, 'Email already registered');
 		}
 		
