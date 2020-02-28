@@ -43,9 +43,7 @@ class UsersController extends Controller
 				return $this->CommonResponse(false, "Registration");
 			}
 
-			return $this->CommonResponse(true, "Registration", [
-				'detail' => $user
-			]);
+			return $this->CommonResponse(true, "Registration", $user);
 		} catch (\Throwable $th) {
 			return $this->ExceptionResponse($th);
 		}
