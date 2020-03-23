@@ -41,12 +41,12 @@ class JwtMiddleware
         } catch (ExpiredException $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Bearer expired'
+                'message' => 'Auth token expired'
             ], 400);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
-                'message' => 'An error with bearer',
+                'message' => 'An error with auth token',
                 'data' => null
             ], 400);
         }

@@ -118,6 +118,31 @@ class ClassesController extends Controller
 		return $this->CommonResponse(true, "Exit class");
 	}
 
+	public function delete(Request $request, $id_class) {
+		// TODO : checking class availability
+		$class_detail = Classes::where([
+			'id' => $id_class
+		])->first();
+		if (!isset($class_detail->id)) {
+			return $this->MessageResponse(false, "Class not found", null);
+		}
+
+		// TODO : checking user is the class owner
+		if ($class_detail->created_by != $request->user->id) {
+			return $this->MessageResponse(false, "Class it not yours", null);
+		}
+
+		// TODO : deleting class
+		$delete = Classes::where([
+			'id' => $id_class
+		])->delete();
+		if (!$delete) {
+			return $this->CommonResponse(false, "Delete class");
+		}
+
+		return $this->CommonResponse(true, "Delete class");
+	}
+
 	private function joinClass($id_user, $id_class)
 	{
 		$class = new ClassMembers();
